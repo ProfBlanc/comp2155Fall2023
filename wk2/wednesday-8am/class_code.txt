@@ -1,0 +1,106 @@
+
+
+def average(total=1, num=1):
+    """
+    Calculate the average value 
+    :param total: a total value
+    :param num: number of values
+    :type total float
+    :type num int
+    :rtype float
+    """
+    if (isinstance(total, int) or isinstance(total, float)) and isinstance(num, int):
+        return total / num
+    return 0.0
+
+
+def print_welcome():
+    return 'Welcome to our program\n'
+
+
+value1 = average("25", 5)
+print(value1)
+
+value2 = average(num=7, total = 28)
+print(value2)
+
+value3 = average()
+print(value3)
+
+*************************
+
+
+#* values: a tuple of arguments
+def get_average_and_max(*values):
+    num = len(values)  # number of elements
+    return sum(values) / num, max(values)
+
+
+r_value = get_average_and_max(1,2,3,4,5,-1,-2,-3)
+
+val1, val2 = r_value
+
+print(r_value)
+
+print(val1, val2)
+
+****************************8
+number_of_students = 0  # global var: defined outside of a function
+
+
+def add_student(firstname, lastname):
+    global number_of_students
+    
+    fullname = f"{firstname} {lastname}"  # local variable 
+    if len(firstname) >= 3 and len(lastname) > 2:
+        number_of_students += 1
+        return "Success", 1  # success message and status code
+    else:
+        return "Failed", 0
+        
+
+print(number_of_students)
+print(add_student("Ben", "Blanc"))
+print(number_of_students)
+print(add_student("Be", "Bl"))
+print(number_of_students)
+
+
+
+***************************
+
+budget = 100
+
+
+def buy_product(value_of_product=0.01):
+    """
+    Decrease our budget IFF value of product is greater than 1 cent
+    :param value_of_product: cost of a product
+    :type value_of_product float
+    :rtype None
+    """
+    global budget
+    if isinstance(value_of_product, float):
+        budget -= value_of_product
+
+
+print(budget)
+print(buy_product(1.0))
+print(budget)
+
+*****************************
+
+
+
+class Student:
+    def __init__(self, fn, ln):
+        self.fn = fn
+        self.ln = ln
+    
+    def __str__(self):
+        return f"Firstname = {self.fn}, Lastname = {self.ln}"
+
+        
+s1 = Student("Ben", "Blanc")
+value = str(s1)
+print(s1, value)
