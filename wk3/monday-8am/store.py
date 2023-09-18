@@ -20,13 +20,12 @@ class Product:
         f.close()
 
 
-inventory = os.listdir("data")
 
 
 def get_product(barcode):
     if ".txt" not in barcode:
         barcode += ".txt"
-    if barcode in inventory:
+    if barcode in os.listdir("data"):
         info = open("data/" + barcode)
         return info.readlines()
 
@@ -46,7 +45,6 @@ def buy():
 
 def manage():
     print("You will be adding a product")
-    # TODO: only add products with unique barcode
     try:
         barcode = input("Enter barcode: ")
         name = input("Enter name: ")
