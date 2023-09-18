@@ -15,32 +15,35 @@ class Product:
     def save(self):
         if not os.path.exists("data"):
             os.mkdir("data")
-        f = open("data/" + self.barcode + ".txt", "w")
+        f = open("data/" + self.barcode, "w")
         f.write(f"{self.name}\n{self.price}")
         f.close()
 
 
-
-
 def get_product(barcode):
-    if ".txt" not in barcode:
-        barcode += ".txt"
     if barcode in os.listdir("data"):
         info = open("data/" + barcode)
-        return info.readlines()
+        data = info.readlines()
+        p = Product(barcode=barcode, price=float(data[1].strip()), name=data[0].strip())
+        return p
 
 
 def buy():
     print("What do you want to buy?")
+    summary = list()
     while True:
         answer = input("Enter barcode of product. "
                        "Or enter (Q)uit to stop loop").lower()
         if answer[0] == "q":
             break
-        product_details = get_product(answer + ".txt")
-        if product_details:
-            print(f"Adding product {product_details[0].strip()} to cart")
-            print(f"Price of product is {product_details[1]}")
+        product = get_product(answer)
+        if product:
+            print(f"Adding product {product.name} to cart")
+            print(f"Price of product is {product.price}")
+            summary.append({"name": product.name, "price": product.price, "barcode": product.barcode})
+
+    print(f"You purchased {len(summary)} items. The total price is {sum([item['price'] for item in summary])}")
+
 
 
 def manage():
@@ -49,7 +52,11 @@ def manage():
         barcode = input("Enter barcode: ")
         name = input("Enter name: ")
         price = float(input("Enter price: "))
-        p = Product(name=name, price=price, barcode=barcode)
+        if barcode in os.listdir("data"):
+            raise TypeError()
+        Product(name=name, price=price, barcode=barcode)
+    except TypeError:
+        print("Barcode already exists")
     except ValueError:
         print("Because of invalid price, the product price is 1 cent")
         price = 0.01
