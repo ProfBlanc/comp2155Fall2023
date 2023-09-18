@@ -1,3 +1,4 @@
+import csv
 import os.path
 import sys
 
@@ -25,8 +26,10 @@ def get_product(barcode):
             return Product(barcode=barcode,
                            name = name,
                            price=price)
+
 def buy():
     print("Welcome, Customer!")
+    summary = list()
     while True:
         answer = input("Enter a barcode or (Q)uit to stop").lower()
         if answer[0] == "q":
@@ -36,8 +39,21 @@ def buy():
         if product:
             print(f"You have purchase product {product.name} "
                   f"with price {product.price}")
+            summary.append({"name": product.name,
+                            "price": product.price,
+                            "barcode": product.barcode})
         else:
             print(f"Product with barcode {answer} does not exists")
+
+    print(f"You purchases {len(summary)} items. "
+          f"The total price is { sum([ item['price'] for item in summary]) }")
+
+    with open("receipt.csv", "w") as file:
+        writer = csv.DictWriter(file, lineterminator='\n', quotechar="'",delimiter=',' ,fieldnames=vars(Product("a", "b", "c")))
+        writer.writeheader()
+        writer.writerows(summary)
+
+
 def manage():
     print("Welcome Store Owner")
     print("You will enter product details")
@@ -46,7 +62,11 @@ def manage():
         barcode = input("Enter barcode: ")
         name = input("Enter name: ")
         price = float(input("Enter price: "))
-        p = Product(barcode=barcode, name=name, price=price)
+        if barcode in os.listdir(base_dir):
+            raise TypeError()
+        Product(barcode=barcode, name=name, price=price)
+    except TypeError:
+        print(f"Sorry but barcode {barcode} already exists")
     except ValueError:
         print("Invalid price", file=sys.stderr)
 def main():
