@@ -60,6 +60,16 @@ class Product:
         except:
             raise ValueError("Price is not a float")
 
+    @classmethod
+    def get_product_by_barcode(cls, barcode):
+        with open(f"{Product.base_dir}/{barcode}.txt") as f:
+            content = f.readlines()
+            name = content[0].strip()
+            price = content[1].strip()
+            return cls(barcode=barcode, name=name, price=price)
+    @staticmethod
+    def does_product_exist(barcode):
+        return os.path.exists(f"{Product.base_dir}/{barcode}.txt")
 def manage():
     print("You will be entering products")
     while True:
@@ -68,10 +78,28 @@ def manage():
             name = input("Enter name: ")
             price = input("Enter price: ")
             p = Product(name=name, barcode=barcode, price=price)
+            answer = input("Do you want to enter another product? y/n ")
+            if answer[0].lower() != "y":
+                break
+
         except ValueError as e:
             print(e, file=sys.stderr)
+    main()
 def buy():
-    pass
+    print("Tell us what you'd like to order")
+    cart = list()
+    while True:
+        answer = input("Enter barcode or (Q) to quit: ")
+        if answer.lower()[0] == "q":
+            break
+        if Product.does_product_exist(answer):
+            p = Product.get_product_by_barcode(answer)
+            cart.append(p)
+            print(f"You added {p.name} with a price of {p.price}")
+        else:
+            print(f"Product with barcode {answer} does not exist")
+
+    print(f"Thanks for shopping. Your bill for {len(cart)} items is {sum([item.price for item in cart])}")
 def main():
     print("Welcome to our store")
     choice = input("Do you want to (M)anage or (B)uy? ").lower()
