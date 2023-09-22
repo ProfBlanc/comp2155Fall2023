@@ -52,6 +52,16 @@ class Product:
         if not price.isdigit():
             raise ValueError("Price must be whole number")
         self.__price = int(price)
+    @staticmethod
+    def does_barcode_exist(barcode):
+        return os.path.exists(Product.base_dir + "/" + barcode + ".txt")
+    @classmethod
+    def get_product_by_barcode(cls, barcode):
+        f = open(Product.base_dir + "/" + barcode + ".txt")
+        content = f.readlines()
+        return cls(barcode=barcode,
+                   price=content[1].strip(),
+                   name=content[0].strip())
 def manage():
     print("You will not by inputting products")
     while True:
@@ -67,8 +77,23 @@ def manage():
                        "y/n: ").lower()
         if answer[0] != "y":
             break
+    main()
 def buy():
-    pass
+    print("You will be buying products")
+    summary = list()
+    while True:
+        answer = input("Enter a barcode or (Q) to stop")
+        if len(answer) == 0 or answer[0].lower() == "q":
+            break
+        if Product.does_barcode_exist(answer):
+            p = Product.get_product_by_barcode(answer)
+            summary.append(p)
+            print(f"Added {p.name} to cart, with the price of {p.price}")
+        else:
+            print(f"Barcode {answer} does not exist")
+    print(f"Summary = {len(summary)} items, total price of "
+          f"{ sum([item.price for item in summary])}")
+    main()
 def main():
     print("Welcome to our Store")
     choice = input("Do you want to (M)anage or (B)uy? ").lower()
