@@ -1,0 +1,11 @@
+Tasks
+1) Allow Store Owner to exit loop
+	Once SO exits loop, return to main function
+2) Allow consumer to purchase
+	Continually ask user for barcode
+		determine if barcode exists in store
+		Yes: add price to cart. 
+		output product name
+		
+		No: display sorry message
+classmethods, staticmethods
