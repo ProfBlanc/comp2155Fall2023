@@ -42,7 +42,17 @@ class Product:
         f = open(self.base_dir + "/" + self.barcode + ".txt", "w")
         f.write(f"{self.name}\n{self.price}")
         f.close()
+    @staticmethod
+    def does_exist(barcode):
+        return os.path.exists(Product.base_dir + "/" + barcode + ".txt")
 
+    @classmethod
+    def get_product_by_barcode(cls, barcode):
+        f = open(Product.base_dir + "/" + barcode + ".txt", "r")
+        contents = f.readlines()
+
+        return cls(barcode=barcode, name=contents[0].strip(),
+                   price=float(contents[1].strip()))
 
 def manage():
     """
@@ -50,17 +60,38 @@ def manage():
     ADD this product to a directory: many .txt files
             barcode.txt, where barcode = numbers
     """
+    while True:
+        try:
+            barcode = input("Enter barcode: ")
+            name = input("Enter name: ")
+            price = float(input("Enter price: "))
+            p = Product(name=name, price=price,
+                        barcode=barcode)
+            answer = input("Do you want to add another product? y/n: ")
+            if answer[0].lower() != "y":
+                break
+        except ValueError:
+            print("Invalid Price", file=sys.stderr)
 
-    try:
-        barcode = input("Enter barcode: ")
-        name = input("Enter name: ")
-        price = float(input("Enter price: "))
-        p = Product(name=name, price=price,
-                    barcode=barcode)
-    except ValueError:
-        print("Invalid Price", file=sys.stderr)
+    main()
 def buy():
-    pass
+    summary = list()
+    print("Welcome to our shopping center")
+    while True:
+        answer = input("Enter barcode or (Q)uit to stop shopping")
+        if answer[0].lower() == "q":
+            break
+        if not Product.does_exist(answer):
+            print(f"Barcode {answer} does not exist")
+        else:
+            p = Product.get_product_by_barcode(answer)
+            summary.append(p)
+            print(f"You have added {p.name} to cart with price of {p.price}")
+
+    print(f"Summary of items = Total Items {len(summary)}, Total Price "
+          f"= { sum( [ item.price for item in summary ] )  }")
+
+    main()
 def main():
     print("Welcome to our store")
     choice = input("Do you want to MANAGE or BUY?: ")
