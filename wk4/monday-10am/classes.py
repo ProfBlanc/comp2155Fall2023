@@ -54,6 +54,60 @@ class SuperHero(Human):
     def attack(self):
         return "My spiddy senses are tingly"
 
+
+class HeavyProduct(Product):
+    def __init__(self, name, price, weight):
+        super().__init__(name, price)
+        self.weight = weight
+    @property
+    def weight(self):
+        return self.__weight
+    @weight.setter
+    def weight(self, weight):
+        if weight < 50:
+            raise ValueError("Heavy products must be at least 50 pounds")
+        self.__weight = weight
+    def __str__(self):
+        return super().__str__() + f",Weight={self.weight}"
+    def can_be_lifted(self, human_weight):
+        return human_weight >= self.weight * 2
+
+class Lion:
+    def __init__(self, name, paws):
+        self.name = name
+        self.paws = paws
+    def __str__(self):
+        return f"Name={self.name}, Paws={self.paws}"
+    def roar(self):
+        return "Roar Lion!"
+    def some_lion_method(self):
+        return "Prof lost his creative juices"
+
+class Tiger:
+    def __init__(self, name, weight):
+        self.name = name
+        self.weight = weight
+    def __str__(self):
+        return f"Name={self.name}, Weight={self.weight}"
+    def roar(self):
+        return "Tiger also roars"
+    def some_tiger_method(self):
+        return "Another random method example"
+
+class Liger(Lion, Tiger):
+    def __init__(self, f1, f2):
+        super.__init__(f1, f2)
+
+
+def example4():
+    liger = Liger("Liger", 10)
+    print(liger.roar())
+    print(liger.name, liger.paws, liger.weight)
+def example3():
+    p = Product("juice", 5)
+    hp = HeavyProduct("Dresser", 1000, 200)
+    print(p)
+    print(hp)
 def example2():
     h = Human("Peter Parker", 20)
     sh = SuperHero("Peter Parker 2", 22, "Spiderman", "Creating Webs")
@@ -69,7 +123,7 @@ def example1():
     print(p1)
 
 def main():
-    example2()
+    example4()
 
 if __name__ == '__main__':
     main()
